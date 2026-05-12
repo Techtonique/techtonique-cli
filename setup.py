@@ -2,7 +2,7 @@ from setuptools import setup, find_packages
 
 setup(
     name="techtonique_cli",
-    version="0.2.0",
+    version="0.3.1",
     packages=find_packages(),  # Automatically finds the `cli` package
     entry_points={
         "console_scripts": [
@@ -12,6 +12,9 @@ setup(
     install_requires=[
         "click>=8.0.0",
         "requests>=2.0.0",
+        "matplotlib", 
+        "pandas",
+        "numpy"
     ],
     description="A CLI tool for Techtonique API",
     long_description=open("README.md").read(),

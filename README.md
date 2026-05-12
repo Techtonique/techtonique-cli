@@ -54,9 +54,6 @@ techtonique forecasting multivariate /Users/t/Documents/datasets/time_series/mul
 
 # Regression
 techtonique ml regression /Users/t/Documents/datasets/tabular/regression/mtcars2.csv --base_model ElasticNet
-
-# Survival Analysis
-techtonique survival /Users/t/Documents/datasets/tabular/survival/kidney.csv --model coxph
 ```
 
 ### 2 - 2 - Interacting with output files

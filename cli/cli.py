@@ -7,6 +7,7 @@ import csv
 import json
 import matplotlib.pyplot as plt
 import numpy as np
+import pandas as pd
 
 
 @click.command()
@@ -241,47 +242,67 @@ def univariate(ctx, file, base_model, n_hidden_features, lags, type_pi, replicat
 @click.option("--h", default=3, help="Forecast horizon")
 @click.option("--select", help="Comma-separated list of keys to select from output")
 @click.option("--to-csv", help="Output results to CSV file")
+@click.option("--plot", help="Variable name to plot. If not specified, plots a random variable", type=str, is_flag=False, flag_value='random')
+@click.option("--plot-file", help="Save forecast plot to specified file")
 @click.pass_context
-def multivariate(ctx, file, base_model, n_hidden_features, lags, h, select, to_csv):
-    """Multivariate forecasting
-
-    Parameters:
-        file: str
-            Path to the CSV file
-        base_model: str
-            Base model to use
-        n_hidden_features: int
-            Number of hidden features
-        lags: int
-            Number of lags
-        h: int
-            Forecast horizon
-        select: str
-            Comma-separated list of keys to select from output
-        to_csv: str
-            Output results to CSV file
-
-    Returns:
-        dict: Result of the forecasting
-
-    Example:
-
-        ```python
-
-        techtonique forecasting multivariate /Users/t/Documents/datasets/time_series/multivariate/ice_cream_vs_heater.csv --lags 25 --h 10
-
-        ```
-    """
+def multivariate(ctx, file, base_model, n_hidden_features, lags, h, select, to_csv, plot, plot_file):
+    """Multivariate forecasting"""
     init_cli(ctx)
     params = {
         "base_model": base_model,
         "n_hidden_features": n_hidden_features,
         "lags": lags,
         "h": h,
-        "select": select,
+        "select": select or "mean,lower,upper" if (plot or plot_file) else select,
         "to_csv": to_csv
     }
     result = ctx.obj["cli"]._make_request("forecasting", Path(file), params)
+    
+    # Handle plotting if requested
+    if (plot or plot_file) and isinstance(result, dict):
+        try:
+            # Read the original CSV to get variable names
+            df = pd.read_csv(file)
+            columns = df.columns.tolist()
+            
+            # If plot is 'random' or not in columns, choose a random column
+            if plot == 'random' or (plot and plot not in columns):
+                plot = np.random.choice(columns)
+                click.echo(f"Plotting random variable: {plot}")
+            
+            # Extract the data for the selected variable
+            if f'mean_{plot}' in result and f'lower_{plot}' in result and f'upper_{plot}' in result:
+                mean = json.loads(result[f'mean_{plot}']) if isinstance(result[f'mean_{plot}'], str) else result[f'mean_{plot}']
+                lower = json.loads(result[f'lower_{plot}']) if isinstance(result[f'lower_{plot}'], str) else result[f'lower_{plot}']
+                upper = json.loads(result[f'upper_{plot}']) if isinstance(result[f'upper_{plot}'], str) else result[f'upper_{plot}']
+                
+                plt.figure(figsize=(10, 6))
+                x = range(len(mean))
+                
+                # Plot mean forecast
+                plt.plot(x, mean, 'b-', label=f'Forecast for {plot}')
+                
+                # Plot confidence interval
+                plt.fill_between(x, lower, upper, color='b', alpha=0.1, label='Confidence Interval')
+                
+                plt.title(f'Forecast with Confidence Intervals for {plot}')
+                plt.xlabel('Time Steps')
+                plt.ylabel('Value')
+                plt.legend()
+                plt.grid(True)
+                
+                if plot_file:
+                    plt.savefig(plot_file)
+                    plt.close()
+                    click.echo(f"Plot saved to {plot_file}")
+                else:
+                    plt.show(block=True)
+            else:
+                click.echo(f"Error: Could not find forecast data for variable {plot}", err=True)
+                
+        except Exception as e:
+            click.echo(f"Error creating plot: {str(e)}", err=True)
+    
     click.echo(result)
 
 
