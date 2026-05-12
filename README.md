@@ -12,7 +12,7 @@ In a virtual environment, run the following command:
 pip install techtonique_cli
 ```
 
-First, get a token from [techtonique.net/token](https://www.techtonique.net/token). If you want to avoid [providing a token](https://www.techtonique.net/token) each time you run the CLI, you can set the `TECHTONIQUE_API_TOKEN` environment variable (for 30 minutes). That is, either: 
+First, get a token from [techtonique.net/token](https://www.techtonique.net/token). If you want to avoid [providing a token](https://www.techtonique.net/token) each time you run the CLI, you can set the `TECHTONIQUE_API_TOKEN` environment variable (for 60 minutes). That is, either: 
 
 - set the `TECHTONIQUE_API_TOKEN` environment variable by replacing the `TOKEN` value below with your token.
 ```bash
