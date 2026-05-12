@@ -1,5 +1,7 @@
 # CLI for Techtonique
 
+![PyPI](https://img.shields.io/pypi/v/techtonique_cli)[![PyPI - License](https://img.shields.io/pypi/l/techtonique_cli)](./LICENSE)[![Downloads](https://pepy.tech/badge/techtonique_cli)](https://pepy.tech/project/techtonique_cli)
+
 This a **Command Line Interface** (CLI) for [Techtonique](https://www.techtonique.net)'s [API](https://www.techtonique.net/docs). Working on all operating systems (Windows, MacOS, Linux). You may find these resources useful: 
 - [https://jeroenjanssens.com/dsatcl/chapter-5-scrubbing-data](https://jeroenjanssens.com/dsatcl/chapter-5-scrubbing-data)
 - [https://jeroenjanssens.com/dsatcl/chapter-7-exploring-data](https://jeroenjanssens.com/dsatcl/chapter-7-exploring-data)
